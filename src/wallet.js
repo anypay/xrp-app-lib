@@ -17,6 +17,10 @@ class Wallet extends Account {
       wallet = rippleLib.Wallet.generate();
       this._balance = 0;
     } else {
+      if (options._privateKey) return new Wallet({
+          privateKey: options._privateKey
+      });
+
       if (rippleLib.Seed.is_valid(options.privateKey)) {
         var secret = options.privateKey;
         wallet = new rippleLib.Wallet(secret);

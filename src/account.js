@@ -1,4 +1,4 @@
-import * as Promise from 'bluebird';
+import * as bb from 'bluebird';
 import Errors from './errors';
 
 try {
@@ -6,7 +6,7 @@ try {
 } catch(_) {
     import * as superagent from 'superagent';
 }
-const http = Promise.promisifyAll(superagent);
+const http = bb.promisifyAll(superagent);
 
 try {
     const rippleLib = window.ripple;

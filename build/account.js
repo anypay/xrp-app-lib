@@ -5,7 +5,7 @@ var _classProps = function (child, staticProps, instanceProps) {
   if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
 };
 
-var Promise = require('bluebird');
+var bb = require('bluebird');
 
 var Errors = require('./errors')["default"];
 
@@ -15,7 +15,7 @@ try {
 } catch (_) {
   var superagent = require('superagent');
 }
-var http = Promise.promisifyAll(superagent);
+var http = bb.promisifyAll(superagent);
 
 try {
   var rippleLib = window.ripple;
