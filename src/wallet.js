@@ -1,16 +1,13 @@
-import * as Promise from 'bluebird';
 import Errors from './errors';
 import Account from './account';
+import * as rippleLib from 'ripple-lib';
 
-try {
-    const rippleLib = window.ripple;
-} catch(_) {
-    import * as rippleLib from 'ripple-lib';
-}
-
-class Wallet extends Account {
+export default class Wallet extends Account {
 
   constructor(options) {
+    super({
+        publicKey: 'rfemvFrpCAPc4hUa1v8mPRYdmaCqR1iFpe'
+    })
     var wallet;
 
     if (!options) {
@@ -69,6 +66,4 @@ class Wallet extends Account {
     });
   }
 }
-
-export default Wallet;
 

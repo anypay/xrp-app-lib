@@ -1,4 +1,3 @@
-import * as Promise from 'bluebird';
 import Wallet from './wallet';
 import Account from './account';
 import Errors from './errors';

@@ -1,36 +1,42 @@
-"use strict";
+'use strict';
 
-var _classProps = function (child, staticProps, instanceProps) {
-  if (staticProps) Object.defineProperties(child, staticProps);
-  if (instanceProps) Object.defineProperties(child.prototype, instanceProps);
-};
+var _inherits = require('babel-runtime/helpers/inherits')['default'];
 
-var _extends = function (child, parent) {
-  child.prototype = Object.create(parent.prototype, {
-    constructor: {
-      value: child,
-      enumerable: false,
-      writable: true,
-      configurable: true
-    }
-  });
-  child.__proto__ = parent;
-};
+var _get = require('babel-runtime/helpers/get')['default'];
 
-var Promise = require('bluebird');
+var _createClass = require('babel-runtime/helpers/create-class')['default'];
 
-var Errors = require('./errors')["default"];
-var Account = require('./account')["default"];
+var _classCallCheck = require('babel-runtime/helpers/class-call-check')['default'];
 
+var _Promise = require('babel-runtime/core-js/promise')['default'];
 
-try {
-  var rippleLib = window.ripple;
-} catch (_) {
-  var rippleLib = require('ripple-lib');
-}
+var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
-var Wallet = (function (Account) {
-  var Wallet = function Wallet(options) {
+var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
+
+Object.defineProperty(exports, '__esModule', {
+  value: true
+});
+
+var _errors = require('./errors');
+
+var _errors2 = _interopRequireDefault(_errors);
+
+var _account = require('./account');
+
+var _account2 = _interopRequireDefault(_account);
+
+var _rippleLib = require('ripple-lib');
+
+var rippleLib = _interopRequireWildcard(_rippleLib);
+
+var Wallet = (function (_Account) {
+  function Wallet(options) {
+    _classCallCheck(this, Wallet);
+
+    _get(Object.getPrototypeOf(Wallet.prototype), 'constructor', this).call(this, {
+      publicKey: 'rfemvFrpCAPc4hUa1v8mPRYdmaCqR1iFpe'
+    });
     var wallet;
 
     if (!options) {
@@ -47,56 +53,58 @@ var Wallet = (function (Account) {
         wallet.address = wallet.getAddress().value;
         this._balance = undefined;
       } else {
-        throw new Errors.InvalidPrivateKey();
+        throw new _errors2['default'].InvalidPrivateKey();
       }
     }
     this._publicKey = wallet.address;
     this._privateKey = wallet.secret;
-  };
+  }
 
-  _extends(Wallet, Account);
+  _inherits(Wallet, _Account);
 
-  Wallet.generate = function () {
-    var wallet = rippleLib.Wallet.generate();
-    return new Wallet({ privateKey: wallet.secret });
-  };
+  _createClass(Wallet, [{
+    key: 'sendPayment',
+    value: function sendPayment(options) {
+      var _this = this;
+      var remote = new rippleLib.Remote({
+        servers: [{ host: 's1.ripple.com', port: 443, secure: true }]
+      });
+      return new _Promise(function (resolve, reject) {
+        remote.connect(function (err, res) {
+          if (err) {
+            return reject(err);
+          }
+          remote.setSecret(_this.publicKey, _this.privateKey);
 
-  Wallet.prototype.sendPayment = function (options) {
-    var _this = this;
-    var remote = new rippleLib.Remote({
-      servers: [{ host: "s1.ripple.com", port: 443, secure: true }]
-    });
-    return new Promise(function (resolve, reject) {
-      remote.connect(function (err, res) {
-        if (err) {
-          return reject(err);
-        }
-        remote.setSecret(_this.publicKey, _this.privateKey);
-
-        remote.createTransaction("Payment", {
-          account: _this.publicKey,
-          destination: options.to.publicKey,
-          amount: options.amount * 1000000
-        }).submit(function (error, response) {
-          remote.disconnect();
-          if (error) {
-            return reject(error);
-          };
-          resolve(response);
+          remote.createTransaction('Payment', {
+            account: _this.publicKey,
+            destination: options.to.publicKey,
+            amount: options.amount * 1000000
+          }).submit(function (error, response) {
+            remote.disconnect();
+            if (error) {
+              return reject(error);
+            };
+            resolve(response);
+          });
         });
       });
-    });
-  };
-
-  _classProps(Wallet, null, {
-    privateKey: {
-      get: function () {
-        return this._privateKey;
-      }
     }
-  });
+  }, {
+    key: 'privateKey',
+    get: function get() {
+      return this._privateKey;
+    }
+  }], [{
+    key: 'generate',
+    value: function generate() {
+      var wallet = rippleLib.Wallet.generate();
+      return new Wallet({ privateKey: wallet.secret });
+    }
+  }]);
 
   return Wallet;
-})(Account);
+})(_account2['default']);
 
-exports["default"] = Wallet;
+exports['default'] = Wallet;
+module.exports = exports['default'];

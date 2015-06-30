@@ -1,21 +1,11 @@
 import * as bb from 'bluebird';
 import Errors from './errors';
+import * as superagent from 'superagent';
+import * as rippleLib from 'ripple-lib'
 
-try {
-    import * as superagent from 'superagent-browserify';
-} catch(_) {
-    import * as superagent from 'superagent';
-}
 const http = bb.promisifyAll(superagent);
 
-try {
-    const rippleLib = window.ripple;
-} catch(_) {
-    import * as rippleLib from 'ripple-lib';
-}
-
-class Account {
-
+export default class Account {
   constructor(options) {
     if (options && rippleLib.UInt160.is_valid(options.publicKey)) {
       this._publicKey = options.publicKey;
@@ -32,26 +22,29 @@ class Account {
     return this._balance;
   }
 
-  updateBalance() {
-    var _this = this;
-    return http.get('https://api.ripple.com/v1/accounts/'+_this.publicKey+'/balances')
-               .endAsync()
-               .then(function(response) {
-                   if (response.body.success) {
-                       var balance
-                       for (let _balance of response.body.balances)
-                           if (_balance.currency === 'XRP') {
-                               balance = _balance
-                               break
-                           }
-                       _this._balance = parseFloat(balance.value); 
-                       return parseFloat(balance.value);
-                   } else {
-                       return _this._balance = 0;
-                   }
-               });
-  }
-}
+  async updateBalance() {
+    const response = await http.get(`https://api.ripple.com/v1/accounts/${this.publicKey}/balances`).endAsync()
 
-export default Account;
+    if (response.body.success) {
+        const balance = response.body.balances.reduce((prev, current) => {
+            if (prev) {
+                return prev
+            }
+            else if (current.currency === 'XRP') {
+                return current
+            }
+            else {
+                return false
+            }
+        }, false)
+
+        this._balance = parseFloat(balance.value)
+        return parseFloat(balance.value)
+    }
+    else {
+        return this._balance = 0;
+    }
+  }
+
+}
 

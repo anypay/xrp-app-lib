@@ -91,6 +91,7 @@ class decodeURI {
 
 class URIError extends Error {
     constructor(message) {
+        super(message)
         this.message = message || "Badly formatted URI"
         this.type = "URIError"
         Error.captureStackTrace(this, URIError)

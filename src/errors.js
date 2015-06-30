@@ -1,5 +1,6 @@
 class XError extends Error {
     constructor(message) {
+        super(message)
         this.message = message
         Error.captureStackTrace(this, this.constructor)
     }
@@ -7,15 +8,15 @@ class XError extends Error {
 
 class InvalidPrivateKey extends Error {
     constructor(message) {
-        this.type = 'InvalidPrivateKey'
         super(message)
+        this.type = 'InvalidPrivateKey'
     }
 }
 
 class InvalidPublicKey extends Error {
     constructor(message) {
-        this.type = 'InvalidPublicKey'
         super(message)
+        this.type = 'InvalidPublicKey'
     }
 }
 
