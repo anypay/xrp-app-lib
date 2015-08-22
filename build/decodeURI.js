@@ -37,17 +37,18 @@ var decodeURI = (function () {
             if (typeof uri !== 'string') this['throw']("uri is not a string");
 
             var params;
-            var protocol = uri.replace(/\s/g, '').match(/^([a-z\.]+):\/\//); // host after slashes
+            //var protocol = uri.replace(/\s/g, '').match(/^([a-z\.]+):\/\//) // host after slashes
+            var protocol = uri.replace(/\s/g, '').match(/^([a-z\.]+):\/{0,2}/); // host after slashes
 
             if (!(protocol instanceof Array && protocol.length === 2)) this['throw']("protocol not supported");
             protocol = protocol[1];
 
             switch (protocol) {
                 case "ripple.com":
-                    params = this.parseURI('ripple.com://', uri);
+                    params = this.parseURI('ripple.com', uri);
                     break;
                 case "ripple":
-                    params = this.parseURI('ripple://', uri);
+                    params = this.parseURI('ripple', uri);
                     break;
                 default:
                     this['throw']("protocol not supported");
@@ -85,9 +86,9 @@ var decodeURI = (function () {
     }, {
         key: 'parseURI',
         value: function parseURI(scheme, uri) {
-            // remove whitespace
+            // remove whitespace and protocol scheme
             var parsedURI = uri.replace(/\s/g, '');
-            var withoutScheme = parsedURI.substr(scheme.length);
+            var withoutScheme = parsedURI.replace(scheme, '').replace(/^:*/, '').replace(/^\/*/, '');
 
             if (!withoutScheme.length) this['throw']();
 
