@@ -25,12 +25,9 @@ describe('Wallets', function() {
   });
 
   it('should throw error when importing an empty secret', function() {
-    assert.throws(
-      function() {
+    assert.throws(function() {
         XRPLib.importWalletFromSecret('')
-      },
-      XRPLib.Errors.InvalidPrivateKey
-    );
+    });
   });
 
   it.skip('should send a payment', function(done) {

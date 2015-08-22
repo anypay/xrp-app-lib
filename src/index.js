@@ -1,6 +1,6 @@
 import Wallet from './wallet';
 import Account from './account';
-import Errors from './errors';
+import * as Errors from './errors';
 import decodeURI from './decodeURI';
 import Listener from 'xrp-account-listener-browserify'
 

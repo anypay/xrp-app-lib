@@ -1,5 +1,5 @@
 import * as bb from 'bluebird';
-import Errors from './errors';
+import * as Errors from './errors';
 import * as superagent from 'superagent';
 import * as rippleLib from 'ripple-lib'
 
@@ -10,7 +10,7 @@ export default class Account {
     if (options && rippleLib.UInt160.is_valid(options.publicKey)) {
       this._publicKey = options.publicKey;
     } else {
-      throw new Errors.InvalidPublicKey
+      throw new Errors.InvalidPublicKey()
     }
   }
 

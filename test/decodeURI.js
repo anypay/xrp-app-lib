@@ -1,7 +1,7 @@
 import {uris_to_pass, uris_to_fail} from './uri.json'
-import * as url from 'url'
-import * as assert from 'assert'
-import * as XRPLib from '../'
+import url from 'url'
+import assert from 'assert'
+import XRPLib from '../'
 
 function compareKeys(object1, object2, keys) {
     if (!(keys instanceof Array))
@@ -13,8 +13,9 @@ function compareKeys(object1, object2, keys) {
 describe('URIs', function() {
     it('should verify correctly formatted uris', function() {
         assert.doesNotThrow(function() {
-            for (let uri of uris_to_pass)
+            for (let uri of uris_to_pass) {
                 XRPLib.decodeURI(uri)
+            }
         })
     })
 
