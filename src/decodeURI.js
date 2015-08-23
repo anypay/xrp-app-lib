@@ -17,7 +17,7 @@ export default function decode(uri) {
       throw new URIError()
     }
 
-    const parsed = { uri: uri }
+    const parsed = { uri }
     match.shift() //account for the pseudo-match of the protocol name
 
     if (match[2]) {
@@ -38,7 +38,7 @@ class URIError extends Error {
     constructor(message) {
         super(message)
         this.message = message || "Badly formatted URI"
-        this.type = "URIError"
+        this.name = "URIError"
         Error.captureStackTrace(this, URIError)
     }
 }
