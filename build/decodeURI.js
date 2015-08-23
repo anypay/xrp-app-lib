@@ -8,7 +8,7 @@ var _get = require('babel-runtime/helpers/get')['default'];
 
 var _inherits = require('babel-runtime/helpers/inherits')['default'];
 
-var _Number$isNaN = require('babel-runtime/core-js/number/is-nan')['default'];
+var _getIterator = require('babel-runtime/core-js/get-iterator')['default'];
 
 var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
 
@@ -26,6 +26,8 @@ var _account = require('./account');
 
 var _account2 = _interopRequireDefault(_account);
 
+var rippleRX = /^(ripple|ripple.com):\/{0,2}([a-zA-Z0-9]{27,34})(?:\?(.*))?$/;
+
 var decodeURI = (function () {
     function decodeURI() {
         _classCallCheck(this, decodeURI);
@@ -33,90 +35,60 @@ var decodeURI = (function () {
 
     _createClass(decodeURI, [{
         key: 'decode',
+
+        /**
+         * decodes a ripple URI, spec'd at
+         * https://wiki.ripple.com into a POJO
+         * representing the encoded transaction
+         *
+         * adopted from https://gist.github.com/matthewhudson/7999278
+         *
+         * @method decode
+         * @param {String} uri
+         * @returns {Object} decodedURI
+         */
         value: function decode(uri) {
-            if (typeof uri !== 'string') this['throw']("uri is not a string");
-
-            var params;
-            //var protocol = uri.replace(/\s/g, '').match(/^([a-z\.]+):\/\//) // host after slashes
-            var protocol = uri.replace(/\s/g, '').match(/^([a-z\.]+):\/{0,2}/); // host after slashes
-
-            if (!(protocol instanceof Array && protocol.length === 2)) this['throw']("protocol not supported");
-            protocol = protocol[1];
-
-            switch (protocol) {
-                case "ripple.com":
-                    params = this.parseURI('ripple.com', uri);
-                    break;
-                case "ripple":
-                    params = this.parseURI('ripple', uri);
-                    break;
-                default:
-                    this['throw']("protocol not supported");
+            var match = rippleRX.exec(uri);
+            if (!match) {
+                throw new URIError();
             }
 
-            switch (params.action) {
-                case 'query':
-                    return this.makeQuery(params);
-                case 'send':
-                    return this.makeSend(params);
-                    break;
-                default:
-                    this['throw']("this action not supported");
-            }
-        }
-    }, {
-        key: 'makeSend',
-        value: function makeSend(params) {
-            // Try and import the account
-            if (params.to) var accountTo = new _account2['default']({ publicKey: params.to });else this['throw']();
+            var parsed = { uri: uri };
+            match.shift(); //account for the pseudo-match of the protocol name
 
-            if (!accountTo) this['throw']();
-            if (params.amount) {
-                var amount = parseFloat(params.amount);
-                if (_Number$isNaN(amount)) this['throw']();else params.amount = amount;
-            }
-            return params;
-        }
-    }, {
-        key: 'makeQuery',
-        value: function makeQuery(params) {
-            new _account2['default']({ publicKey: params.address });
-            return params;
-        }
-    }, {
-        key: 'parseURI',
-        value: function parseURI(scheme, uri) {
-            // remove whitespace and protocol scheme
-            var parsedURI = uri.replace(/\s/g, '');
-            var withoutScheme = parsedURI.replace(scheme, '').replace(/^:*/, '').replace(/^\/*/, '');
+            if (match[2]) {
+                var queries = match[2].split('&');
+                var _iteratorNormalCompletion = true;
+                var _didIteratorError = false;
+                var _iteratorError = undefined;
 
-            if (!withoutScheme.length) this['throw']();
+                try {
+                    for (var _iterator = _getIterator(queries), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
+                        var _query = _step.value;
 
-            var parts = withoutScheme.split('?');
-
-            // When there is no query string
-            if (parts.length === 1) {
-                return {
-                    action: 'query',
-                    address: parts[0],
-                    parsedURI: parsedURI,
-                    rawURI: uri
-                };
+                        var query = _query.split('=');
+                        if (query.length == 2) {
+                            parsed[query[0]] = decodeURIComponent(query[1]);
+                        }
+                    }
+                } catch (err) {
+                    _didIteratorError = true;
+                    _iteratorError = err;
+                } finally {
+                    try {
+                        if (!_iteratorNormalCompletion && _iterator['return']) {
+                            _iterator['return']();
+                        }
+                    } finally {
+                        if (_didIteratorError) {
+                            throw _iteratorError;
+                        }
+                    }
+                }
             }
 
-            // There is one query string
-            else if (parts.length === 2) {
-                    var out = qs.parse(parts[1]);
-                    out.action = parts[0];
-                    out.parsedURI = parsedURI;
-                    out.rawURI = uri;
-                    return out;
-                } else throw new URIError();
-        }
-    }, {
-        key: 'throw',
-        value: function _throw(message) {
-            throw new URIError(message);
+            parsed.address = match[1];
+            return parsed;
         }
     }]);
 
