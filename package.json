@@ -21,7 +21,7 @@
     "ripple-lib": "^0.9.4",
     "superagent": "^0.21.0",
     "superagent-browserify": "0.0.2",
-    "xrp-account-listener-browserify": "^1.0.1"
+    "xrp-account-listener-browserify": "git+ssh://git@github.com:anypay/xrp-account-listener-browserify.git#f7a46eb7a83945e33d88d2b7fe820a95a4f13b5e"
   },
   "devDependencies": {
     "mocha": "^2.0.1",
