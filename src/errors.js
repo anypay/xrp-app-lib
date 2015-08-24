@@ -6,22 +6,17 @@ class XError extends Error {
     }
 }
 
-class InvalidPrivateKey extends Error {
+export class InvalidPrivateKey extends Error {
     constructor(message) {
         super(message)
         this.type = 'InvalidPrivateKey'
     }
 }
 
-class InvalidPublicKey extends Error {
+export class InvalidPublicKey extends Error {
     constructor(message) {
         super(message)
         this.type = 'InvalidPublicKey'
     }
 }
-
-export default {
-  InvalidPrivateKey: InvalidPrivateKey,
-  InvalidPublicKey: InvalidPublicKey
-};
 

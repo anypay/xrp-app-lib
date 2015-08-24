@@ -1,7 +1,7 @@
 import Wallet from './wallet';
 import Account from './account';
-import Errors from './errors';
-import decodeURI from './decodeURI';
+import * as Errors from './errors';
+import decode from './decodeURI';
 import Listener from 'xrp-account-listener-browserify'
 
 class XRPLib {
@@ -49,7 +49,7 @@ class XRPLib {
   }
 
   decodeURI(uri) {
-    return decodeURI.decode(uri);
+    return decode(uri);
   }
 }
 

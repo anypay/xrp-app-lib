@@ -8,6 +8,8 @@ var _Promise = require('babel-runtime/core-js/promise')['default'];
 
 var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
 
+var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
+
 var _wallet = require('./wallet');
 
 var _wallet2 = _interopRequireDefault(_wallet);
@@ -18,11 +20,11 @@ var _account2 = _interopRequireDefault(_account);
 
 var _errors = require('./errors');
 
-var _errors2 = _interopRequireDefault(_errors);
+var Errors = _interopRequireWildcard(_errors);
 
-var _decodeURI2 = require('./decodeURI');
+var _decodeURI = require('./decodeURI');
 
-var _decodeURI3 = _interopRequireDefault(_decodeURI2);
+var _decodeURI2 = _interopRequireDefault(_decodeURI);
 
 var _xrpAccountListenerBrowserify = require('xrp-account-listener-browserify');
 
@@ -63,7 +65,7 @@ var XRPLib = (function () {
   }, {
     key: 'decodeURI',
     value: function decodeURI(uri) {
-      return _decodeURI3['default'].decode(uri);
+      return (0, _decodeURI2['default'])(uri);
     }
   }, {
     key: '_Wallet',
@@ -78,7 +80,7 @@ var XRPLib = (function () {
   }, {
     key: 'Errors',
     get: function get() {
-      return _errors2['default'];
+      return Errors;
     }
   }, {
     key: 'Listener',

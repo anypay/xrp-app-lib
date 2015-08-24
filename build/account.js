@@ -8,8 +8,6 @@ var _regeneratorRuntime = require('babel-runtime/regenerator')['default'];
 
 var _interopRequireWildcard = require('babel-runtime/helpers/interop-require-wildcard')['default'];
 
-var _interopRequireDefault = require('babel-runtime/helpers/interop-require-default')['default'];
-
 Object.defineProperty(exports, '__esModule', {
   value: true
 });
@@ -20,7 +18,7 @@ var bb = _interopRequireWildcard(_bluebird);
 
 var _errors = require('./errors');
 
-var _errors2 = _interopRequireDefault(_errors);
+var Errors = _interopRequireWildcard(_errors);
 
 var _superagent = require('superagent');
 
@@ -39,7 +37,7 @@ var Account = (function () {
     if (options && rippleLib.UInt160.is_valid(options.publicKey)) {
       this._publicKey = options.publicKey;
     } else {
-      throw new _errors2['default'].InvalidPublicKey();
+      throw new Errors.InvalidPublicKey();
     }
   }
 

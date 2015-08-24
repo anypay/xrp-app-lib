@@ -8,8 +8,8 @@
     "ripple-lib": "./src/ripple-lib-browser.js"
   },
   "scripts": {
-    "test": "npm run build && mocha -R spec test/ --timeout 20000",
-    "test-debug": "npm run build && mocha debug -R spec test/ --timeout 20000",
+    "test": "npm run build && mocha -R spec test/ --timeout 20000 --slow 2",
+    "test-debug": "npm run build && mocha --debug-brk -R spec test/ --timeout 20000",
     "build": "babel src --out-dir build"
   },
   "author": "Steven Zeiler",

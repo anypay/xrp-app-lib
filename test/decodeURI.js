@@ -1,62 +1,64 @@
 import {uris_to_pass, uris_to_fail} from './uri.json'
-import * as url from 'url'
-import * as assert from 'assert'
-import * as XRPLib from '../'
+import url from 'url'
+import assert from 'assert'
+import {decodeURI} from '../'
+import {describe, it} from 'mocha'
 
 function compareKeys(object1, object2, keys) {
-    if (!(keys instanceof Array))
+    if (!(keys instanceof Array)) {
         keys = [keys]
-    for (let key of keys)
+    }
+    for (let key of keys) {
         assert.strictEqual(object1[key], object2[key])
+    }
 }
 
-describe('URIs', function() {
-    it('should verify correctly formatted uris', function() {
-        assert.doesNotThrow(function() {
-            for (let uri of uris_to_pass)
-                XRPLib.decodeURI(uri)
+function evensFilter(_, index) {
+    return !(index%2)
+}
+
+function oddsFilter(_, index) {
+    return !!(index%2)
+}
+
+describe('URIs', () => {
+    it('should verify correctly formatted uris', () => {
+        assert.doesNotThrow(() => {
+            for (let uri of uris_to_pass) {
+                decodeURI(uri)
+            }
         })
     })
 
-    it('should throw for incorrectly formatted uris', function() {
-        for (let uri of uris_to_fail)
-            assert.throws(function() {
-                XRPLib.decodeURI(uri)
+    it('should throw for incorrectly formatted uris', () => {
+        for (let uri of uris_to_fail) {
+            assert.throws(() => {
+                decodeURI(uri)
             })
+        }
     })
 
-    it('should decode parameters correctly', function() {
-        const justAccount = uris_to_pass[0]
-        var data, expected
-        data = XRPLib.decodeURI(justAccount)
+    it('should decode parameters correctly', () => {
+        const justAccount = uris_to_pass.filter(evensFilter)
 
-        expected = {
-            action: "query",
-            address: "rfemvFrpCAPc4hUa1v8mPRYdmaCqR1iFpe"
-        }
+        justAccount.forEach((uri) => {
+            const data = decodeURI(uri)
+            const expected = {
+                address: 'rfemvFrpCAPc4hUa1v8mPRYdmaCqR1iFpe'
+            }
+            compareKeys(data, expected, ['address'])
+        })
 
-        compareKeys(data, expected, ['action', 'address'])
+        const withData = uris_to_pass.filter(oddsFilter)
 
-        const rippleProtocol = uris_to_pass[1]
-        data = XRPLib.decodeURI(rippleProtocol)
-
-        compareKeys(data, expected, ['action', 'address'])
-
-        const justSend = uris_to_pass[2]
-        data = XRPLib.decodeURI(justSend)
-
-        expected = {
-            action: "send",
-            to: "rfemvFrpCAPc4hUa1v8mPRYdmaCqR1iFpe"
-        }
-
-        compareKeys(data, expected, ['action', 'to'])
-
-        const sendWithData = uris_to_pass[3]
-        data = XRPLib.decodeURI(sendWithData)
-
-        expected.amount = 10
-
-        compareKeys(data, expected, ['action', 'to', 'amount'])
+        withData.forEach((uri) => {
+            const data = decodeURI(uri)
+            const expected = {
+                address: 'rfemvFrpCAPc4hUa1v8mPRYdmaCqR1iFpe',
+                amount: '10',
+                currency: 'xrp'
+            }
+            compareKeys(data, expected, ['address'])
+        })
     })
 })
