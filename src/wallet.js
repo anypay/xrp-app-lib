@@ -52,12 +52,17 @@ export default class Wallet extends Account {
         if (err) { return reject(err) }
         remote.setSecret(_this.publicKey, _this.privateKey) 
 
-        remote.createTransaction('Payment', {
+        const transaction = remote.createTransaction('Payment', {
           account: _this.publicKey,
           destination: options.to.publicKey,
           amount: options.amount * 1000000
         })
-        .submit(function(error, response) {
+
+        if (options.destination_tag) {
+          transaction.setDestinationTag(options.destination_tag)
+        }
+  
+        transaction.submit(function(error, response) {
           remote.disconnect();
           if (error) { return reject(error) };
           resolve(response);

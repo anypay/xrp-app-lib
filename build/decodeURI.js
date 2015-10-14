@@ -78,7 +78,7 @@ var URIError = (function (_Error) {
 
         _get(Object.getPrototypeOf(URIError.prototype), 'constructor', this).call(this, message);
         this.message = message || "Badly formatted URI";
-        this.type = "URIError";
+        this.name = "URIError";
         Error.captureStackTrace(this, URIError);
     }
 
